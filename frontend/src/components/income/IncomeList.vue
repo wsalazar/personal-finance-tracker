@@ -1,4 +1,5 @@
 <template>
+  <SidebarMenu />
   <div id="income-list">
     <button class="add-income" @click="addIncome">Add Income</button>
     <table>
@@ -16,8 +17,15 @@
           <td>{{ income.incomeSource }}</td>
           <td>${{ income.amount }}</td>
           <td>{{ new Date(income.date).toLocaleString() }}</td>
-          <td id="edit-icon" @click="editIncome(income._id)">Edit</td>
-          <td id="delete-icon" @click="deleteIncome(income._id)">Delete</td>
+          <td class="cursor-pointer" @click="editIncome(income._id)">
+            <PencilSquareIcon className="h-5 w-5 text-gray-500" />
+          </td>
+          <td
+            class="cursor-pointer text-rose-600 font-bold"
+            @click="deleteIncome(income._id)"
+          >
+            X
+          </td>
         </tr>
       </tbody>
     </table>
@@ -28,6 +36,9 @@
 import router from '@/router';
 import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
+import { PencilSquareIcon } from '@heroicons/vue/16/solid';
+import SidebarMenu from '@/views/SidebarMenu.vue';
+
 const incomeList = ref([]);
 
 const editIncome = async (id: string) => {
@@ -59,3 +70,4 @@ const addIncome = () => {
   router.push({ name: 'IncomeForm' });
 };
 </script>
+<style scoped></style>

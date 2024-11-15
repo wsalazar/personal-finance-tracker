@@ -11,7 +11,7 @@ import { PayeeService } from './payee.service';
 import { CreatePayeeDto } from '../dto/create-payee.dto';
 import { UpdatePayeeDto } from '../dto/update-payee.dto';
 
-@Controller('payee')
+@Controller('expense')
 export class PayeeController {
   constructor(private readonly payeeService: PayeeService) {}
 

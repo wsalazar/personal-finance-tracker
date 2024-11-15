@@ -38,7 +38,6 @@ onMounted(async () => {
   if (id) {
     isDirty.value = true;
     const response = await fetchIncomeById(id);
-    console.log(response);
     const newDate = new Date(response?.data.date);
     let month = String(newDate.getMonth() + 1);
     if (String(newDate.getMonth()).length < 2) {
@@ -48,7 +47,6 @@ onMounted(async () => {
     if (String(newDate.getDate()).length < 2) {
       date = String(newDate.getDate()).padStart(2, '0');
     }
-    console.log(month);
 
     Object.assign(incomeData, {
       ...response?.data,

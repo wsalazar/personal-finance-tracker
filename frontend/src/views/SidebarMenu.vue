@@ -1,12 +1,40 @@
 <template>
   <div class="sidebar">
     <ul>
-      <li><router-link to="/goals">Goals</router-link></li>
       <li><router-link to="/income">Income</router-link></li>
-      <li><router-link to="/expenses">Expenses</router-link></li>
+      <li>
+        <router-link to="/expenses">Expenses</router-link>
+      </li>
+      <li>
+        <router-link to="/goals" :class="{ disabled: isGoalsDisabled }"
+          >Goals</router-link
+        >
+      </li>
     </ul>
   </div>
 </template>
+<script setup lang="ts">
+import { api } from '@/services/api';
+import { ref } from 'vue';
+
+const isGoalsDisabled = ref(true);
+
+const shouldGoalsBeEnabled = async () => {
+  try {
+    const result = await api.get('goal/income/expense/verification');
+    console.log(result);
+    isGoalsDisabled.value = !result.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+shouldGoalsBeEnabled();
+/**
+ * make a request to the server to check if income and expenses are set. If so
+ * make isGoalsDisabled false
+ */
+</script>
 
 <style scoped>
 .sidebar {
@@ -39,5 +67,11 @@
 
 .sidebar a:hover {
   background-color: #e0e0e0; /* Change background on hover */
+}
+
+.disabled {
+  pointer-events: none;
+  color: #ccc;
+  text-decoration: none;
 }
 </style>

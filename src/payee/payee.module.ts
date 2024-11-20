@@ -10,5 +10,6 @@ import { Payee, PayeeSchema } from 'src/schemas/payee.schema/payee.schema';
   ],
   controllers: [PayeeController],
   providers: [PayeeService],
+  exports: [PayeeService],
 })
 export class PayeeModule {}

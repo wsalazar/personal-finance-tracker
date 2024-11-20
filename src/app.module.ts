@@ -7,6 +7,7 @@ import { AuthModule } from './user/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { GoalModule } from './goals/goal.module';
 
 /**
  *  MongooseModule.forRoot({
@@ -25,22 +26,25 @@ import { AuthGuard } from '@nestjs/passport';
       { dbName: 'budget-tracker' },
     ),
     /**
-     * I can add this here if I want to access the JwtService globally throughout the entire application     
-     * 
+     * I can add this here if I want to access the JwtService globally throughout the entire application
+     *
      */
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    GoalModule,
     BudgetModule,
     PayeeModule,
     UserModule,
     AuthModule,
   ],
   controllers: [],
-  providers: [{
-    provide: APP_GUARD,
-    useClass: AuthGuard('jwt')
-  }],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard('jwt'),
+    },
+  ],
 })
 export class AppModule {}

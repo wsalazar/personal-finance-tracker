@@ -61,6 +61,7 @@
 import { reactive, ref } from 'vue';
 import { api } from '@/services/api';
 import { useRouter } from 'vue-router';
+import { AxiosError } from 'axios';
 
 const router = useRouter();
 const isLogin = ref(true);
@@ -101,10 +102,14 @@ const handleSubmit = async () => {
 
     // Redirect to dashboard
     router.push('/dashboard');
-    console.log('tests');
-  } catch (err: any) {
-    error.value =
-      err?.response?.data?.message || err?.message || 'An error occurred';
+  } catch (err: unknown) {
+    if (err instanceof AxiosError) {
+      error.value = err.response?.data?.message || 'Uh oh. Something happened.';
+    } else if (err instanceof Error) {
+      error.value = err.message;
+    } else {
+      error.value = 'An unknown error happened.';
+    }
   } finally {
     loading.value = false;
   }

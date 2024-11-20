@@ -1,15 +1,23 @@
 <template>
+  <SidebarMenu />
+
   <form @submit.prevent="handleSubmit" class="income-form">
-    <IncomeInput :form="incomeData" @submit="handleIncomeSubmit" />
+    <IncomeInput
+      :form="incomeData"
+      :isDirty="isDirty"
+      @submit="handleIncomeSubmit"
+    />
   </form>
 </template>
 
 <script setup lang="ts">
 import { reactive, defineEmits, onMounted, ref } from 'vue';
 import { api } from '@/services/api';
-import IncomeInput from '@/views/IncomeInput.vue';
 const emit = defineEmits(['add-income']);
 import { useRoute, useRouter } from 'vue-router';
+import SidebarMenu from '@/views/SidebarMenu.vue';
+import IncomeInput from './IncomeInput.vue';
+import { formatDateForEdit } from '@/helpers/utils';
 const incomeData = reactive({ incomeSource: '', date: '', amount: 0 });
 const isDirty = ref(false);
 const router = useRouter();
@@ -38,19 +46,10 @@ onMounted(async () => {
   if (id) {
     isDirty.value = true;
     const response = await fetchIncomeById(id);
-    const newDate = new Date(response?.data.date);
-    let month = String(newDate.getMonth() + 1);
-    if (String(newDate.getMonth()).length < 2) {
-      month = String(newDate.getMonth() + 1).padStart(2, '0');
-    }
-    let date = String(newDate.getDate());
-    if (String(newDate.getDate()).length < 2) {
-      date = String(newDate.getDate()).padStart(2, '0');
-    }
-
+    const date = formatDateForEdit(response?.data.date);
     Object.assign(incomeData, {
       ...response?.data,
-      date: newDate.getFullYear() + '-' + month + '-' + date,
+      date: date,
     });
   }
 });

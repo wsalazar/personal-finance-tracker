@@ -5,12 +5,19 @@ import IncomeList from '@/components/income/IncomeList.vue';
 import ExpenseList from '@/components/expenses/ExpenseList.vue';
 import GoalList from '@/components/goals/GoalList.vue';
 import IncomeForm from '@/components/income/IncomeForm.vue';
+import ExpenseForm from '@/components/expenses/ExpenseForm.vue';
+import GoalsForm from '@/components/goals/GoalsForm.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'Login',
     component: AuthPage,
+  },
+  {
+    path: '/edit/goal/:id',
+    name: 'GoalEdit',
+    component: GoalsForm,
   },
   {
     path: '/goals',
@@ -28,13 +35,28 @@ const routes: Array<RouteRecordRaw> = [
     component: IncomeForm,
   },
   {
+    path: '/add/goal',
+    name: 'GoalForm',
+    component: GoalsForm,
+  },
+  {
     path: '/add/income',
     name: 'IncomeForm',
     component: IncomeForm,
   },
   {
+    path: '/edit/expense/:id',
+    name: 'ExpenseEdit',
+    component: ExpenseForm,
+  },
+  {
+    path: '/add/expense',
+    name: 'ExpenseForm',
+    component: ExpenseForm,
+  },
+  {
     path: '/expenses',
-    name: 'Expenses',
+    name: 'ExpenseList',
     component: ExpenseList,
   },
   {
@@ -57,7 +79,10 @@ router.beforeEach((to, from, next) => {
     !isAuthenticated
   ) {
     next('/login');
-  } else if (to.name === 'Login' && isAuthenticated) {
+  } else if (
+    (to.name === 'Login' && isAuthenticated) ||
+    (to.path == '/' && isAuthenticated)
+  ) {
     next('/dashboard');
   } else {
     next();

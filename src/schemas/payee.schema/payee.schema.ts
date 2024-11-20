@@ -6,13 +6,10 @@ export type BudgetDocument = HydratedDocument<Payee>;
 @Schema()
 export class Payee {
   @Prop()
-  name: string;
+  description: string;
 
   @Prop()
   amount: number;
-
-  @Prop()
-  memo: string;
 
   @Prop()
   date: Date;

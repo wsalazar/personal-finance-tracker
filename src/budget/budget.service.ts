@@ -70,4 +70,8 @@ export class BudgetService {
       throw new NotFoundException('Income not found.');
     }
   }
+
+  async incomeCount(): Promise<boolean> {
+    return (await this.budgetModel.countDocuments()) > 0;
+  }
 }

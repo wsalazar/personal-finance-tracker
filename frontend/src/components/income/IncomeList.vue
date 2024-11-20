@@ -16,7 +16,7 @@
         <tr v-for="income in incomeList" :key="income._id">
           <td>{{ income.incomeSource }}</td>
           <td>${{ income.amount }}</td>
-          <td>{{ new Date(income.date).toLocaleString() }}</td>
+          <td>{{ formatDateForList(income.date) }}</td>
           <td class="cursor-pointer" @click="editIncome(income._id)">
             <PencilSquareIcon className="h-5 w-5 text-gray-500" />
           </td>
@@ -38,6 +38,7 @@ import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
 import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
+import { formatDateForList } from '@/helpers/utils';
 
 const incomeList = ref([]);
 

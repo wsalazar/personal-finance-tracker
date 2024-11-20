@@ -1,80 +1,70 @@
 <template>
+  <SidebarMenu />
   <form @submit.prevent="handleSubmit" class="expense-form">
-    <div class="form-group">
-      <label for="amount">Amount</label>
-      <input
-        id="amount"
-        v-model.number="form.amount"
-        type="number"
-        step="0.01"
-        required
-        class="form-control"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="category">Category</label>
-      <select
-        id="category"
-        v-model="form.category"
-        required
-        class="form-control"
-      >
-        <option value="food">Food</option>
-        <option value="transport">Transport</option>
-        <option value="utilities">Utilities</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="description">Description</label>
-      <input
-        id="description"
-        v-model="form.description"
-        type="text"
-        required
-        class="form-control"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="date">Date</label>
-      <input
-        id="date"
-        v-model="form.date"
-        type="date"
-        required
-        class="form-control"
-      />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Add Expense</button>
+    <ExpenseInput
+      :form="expenseData"
+      :isDirty="isDirty"
+      @submit="handleIncomingExpense"
+    />
   </form>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { api } from '@/services/api';
+import SidebarMenu from '@/views/SidebarMenu.vue';
+import ExpenseInput from './ExpenseInput.vue';
+import { useRoute, useRouter } from 'vue-router';
+import { formatDateForEdit } from '@/helpers/utils';
+const expenseData = reactive({ description: '', date: '', amount: 0 });
 
+const isDirty = ref(false);
+const router = useRouter();
+const route = useRoute();
 const form = reactive({
   amount: 0,
-  category: 'other',
   description: '',
   date: new Date().toISOString().split('T')[0],
 });
 
+interface ExpenseData {
+  amount: number;
+  description: string;
+  date: string;
+}
+
+const handleIncomingExpense = (expenseData: ExpenseData) => {
+  form.amount = expenseData.amount;
+  form.date = expenseData.date;
+  form.description = expenseData.description;
+};
+
+onMounted(async () => {
+  const id = route.params.id;
+  if (id) {
+    isDirty.value = true;
+    const result = await api.get(`/expenses/${id}`);
+
+    const date = formatDateForEdit(result?.data.date);
+    Object.assign(expenseData, {
+      ...result?.data,
+      date: date,
+    });
+  }
+});
+
 const handleSubmit = async () => {
   try {
-    await api.post('/expenses', form);
+    if (isDirty.value) {
+      await api.put(`/expenses/${route.params.id}`, form);
+    } else {
+      await api.post('/expenses', form);
+    }
     // Reset form
     form.amount = 0;
-    form.category = 'other';
     form.description = '';
     form.date = new Date().toISOString().split('T')[0];
-    // You might want to emit an event to refresh the expense list
-    // emit('expense-added')
+    router.push({ name: 'ExpenseList' });
   } catch (error) {
     console.error('Failed to add expense:', error);
   }

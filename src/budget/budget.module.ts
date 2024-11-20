@@ -14,5 +14,6 @@ import { Payee, PayeeSchema } from 'src/schemas/payee.schema/payee.schema';
   ],
   controllers: [BudgetController],
   providers: [BudgetService],
+  exports: [BudgetService],
 })
 export class BudgetModule {}

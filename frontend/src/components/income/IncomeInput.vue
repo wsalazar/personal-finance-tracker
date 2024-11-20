@@ -34,7 +34,9 @@
         @input="emitChange"
       />
     </div>
-    <button @click="submitIncome">Submit</button>
+    <button @click="submitIncome">
+      {{ isDirty ? 'Edit Income' : 'Add Income' }}
+    </button>
     <button @click="backToList">Back to Income List</button>
   </div>
 </template>
@@ -49,6 +51,10 @@ const props = defineProps({
   form: {
     type: Object,
     required: true,
+  },
+  isDirty: {
+    type: Boolean,
+    required: false,
   },
 });
 

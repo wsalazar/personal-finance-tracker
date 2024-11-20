@@ -31,4 +31,8 @@ export class PayeeService {
   remove(id: string) {
     return this.payeeModel.deleteOne({ _id: Object(id) }).exec();
   }
+
+  async expenseCount(): Promise<boolean> {
+    return (await this.payeeModel.countDocuments()) > 0;
+  }
 }

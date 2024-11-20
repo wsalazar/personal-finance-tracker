@@ -14,9 +14,9 @@
       </thead>
       <tbody>
         <tr v-for="expense in expenseList" :key="expense._id">
-          <td>{{ expense.incomeSource }}</td>
+          <td>{{ expense.description }}</td>
           <td>${{ expense.amount }}</td>
-          <td>{{ new Date(expense.date).toLocaleString() }}</td>
+          <td>{{ formatDateForList(expense.date) }}</td>
           <td class="cursor-pointer" @click="editExpense(expense._id)">
             <PencilSquareIcon className="h-5 w-5 text-gray-500" />
           </td>
@@ -38,6 +38,7 @@ import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
 import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
+import { formatDateForList } from '@/helpers/utils';
 
 const expenseList = ref([]);
 
@@ -47,7 +48,7 @@ const editExpense = async (id: string) => {
 
 const deleteExpense = async (id: string) => {
   try {
-    await api.delete('/expense/' + id);
+    await api.delete('/expenses/' + id);
     fetchExpenseList();
   } catch (err) {
     console.error(err);
@@ -56,7 +57,7 @@ const deleteExpense = async (id: string) => {
 
 const fetchExpenseList = async () => {
   try {
-    const response = await api.get('/expense');
+    const response = await api.get('/expenses');
     expenseList.value = response.data;
   } catch (err) {
     console.error('Error fetching data');
@@ -70,4 +71,3 @@ const addExpense = () => {
   router.push({ name: 'ExpenseForm' });
 };
 </script>
-<style scoped></style>

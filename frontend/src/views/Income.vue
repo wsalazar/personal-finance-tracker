@@ -2,7 +2,6 @@
   <div class="income-page">
     <h1>Income</h1>
     <IncomeForm />
-    <!-- Later you can add IncomeList here -->
   </div>
 </template>
 

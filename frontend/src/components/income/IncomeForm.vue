@@ -35,7 +35,6 @@ interface IncomeData {
 }
 
 const handleIncomeSubmit = (incomeData: IncomeData) => {
-  console.log(incomeData);
   form.amount = incomeData.amount;
   form.incomeSource = incomeData.incomeSource;
   form.date = incomeData.date;

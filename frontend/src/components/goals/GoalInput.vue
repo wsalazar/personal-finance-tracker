@@ -63,7 +63,6 @@ const props = defineProps({
   },
 });
 const localForm = reactive({ ...props.form });
-console.log('localform', localForm);
 
 watch(
   () => props.form,

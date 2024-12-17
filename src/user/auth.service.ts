@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Req,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -19,6 +20,8 @@ export class AuthService {
   ) {}
 
   async create(createUserDto: {
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
   }): Promise<User> {
@@ -36,29 +39,18 @@ export class AuthService {
     return await this.userService.register(newUser);
   }
 
-  async login(userDto: { email: string; password: string }): Promise<string> {
+  async login(
+    userDto: {
+      email: string;
+      password: string;
+      _id: string;
+    },
+    req: any,
+  ): Promise<User> {
     const user = await this.userService.validateUser(userDto);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const payload = {
-      email: user.email,
-      sub: (user as UserDocument)._id.toString(),
-    };
-    // console.log('Payload:', payload);
-    // console.log('JWT Secret:', process.env.JWT_SECRET); // Add this line for debugging
-    // await this.jwtService.signAsync(payload, { secret: your.secret })
-
-    return await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_SECRET,
-    });
+    return user;
   }
-
-  // findOne(email: string, password: string) {
-  //   return this.userModel.findOne({ email: email, password: password }).exec();
-  // }
-
-  // remove(id: string) {
-  //   return this.userModel.deleteOne({ _id: Object(id) }).exec();
-  // }
 }

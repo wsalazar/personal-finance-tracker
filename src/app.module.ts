@@ -17,7 +17,7 @@ import { GoalModule } from './goals/goal.module';
  */
 @Module({
   /*
-   * imports is a nestjs feature. it has nothing to do with file imports
+   * these imports are a nestjs feature. it has nothing to do with file imports
    * it's a nestjs feature to link modules together
    */
   imports: [
@@ -27,12 +27,12 @@ import { GoalModule } from './goals/goal.module';
     ),
     /**
      * I can add this here if I want to access the JwtService globally throughout the entire application
-     *
+     * todo add this a little later
      */
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
-    }),
+    // JwtModule.register({
+    //   secret: process.env.JWT_SECRET,
+    //   signOptions: { expiresIn: '1h' },
+    // }),
     GoalModule,
     BudgetModule,
     PayeeModule,
@@ -41,10 +41,10 @@ import { GoalModule } from './goals/goal.module';
   ],
   controllers: [],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard('jwt'),
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard('jwt'),
+    // },
   ],
 })
 export class AppModule {}

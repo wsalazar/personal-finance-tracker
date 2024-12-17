@@ -11,6 +11,10 @@ import { JwtService } from '@nestjs/jwt';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UserController],
+  /**
+   * todo add providers later when I use tokens for authorization
+   */
+  // providers: [UserService, AuthService, JwtService],
   providers: [UserService, AuthService, JwtService],
   exports: [UserService, AuthService],
 })

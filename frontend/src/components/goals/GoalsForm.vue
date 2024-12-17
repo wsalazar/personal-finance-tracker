@@ -45,17 +45,6 @@ onMounted(async () => {
     isDirty.value = true;
     const response = await api.get(`/goal/${id}`);
     const date = formatDateForEdit(response?.data.date);
-    console.log(date);
-    // const newDate = new Date(response?.data.date);
-    // let month = String(newDate.getMonth() + 1);
-    // if (String(newDate.getMonth()).length < 2) {
-    //   month = String(newDate.getMonth() + 1).padStart(2, '0');
-    // }
-    // let date = String(newDate.getDate());
-    // if (String(newDate.getDate()).length < 2) {
-    //   date = String(newDate.getDate()).padStart(2, '0');
-    // }
-
     Object.assign(goalData, {
       ...response?.data,
       date: date,
@@ -70,7 +59,6 @@ const handleSubmit = async () => {
     } else {
       await api.post('/goal', form);
     }
-    // Reset form
     form.amount = 0;
     form.name = '';
     form.date = new Date().toISOString().split('T')[0];

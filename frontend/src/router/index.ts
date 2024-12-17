@@ -7,6 +7,7 @@ import GoalList from '@/components/goals/GoalList.vue';
 import IncomeForm from '@/components/income/IncomeForm.vue';
 import ExpenseForm from '@/components/expenses/ExpenseForm.vue';
 import GoalsForm from '@/components/goals/GoalsForm.vue';
+import LoginPage from '@/components/auth/LoginPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,6 +15,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Login',
     component: AuthPage,
   },
+
   {
     path: '/edit/goal/:id',
     name: 'GoalEdit',
@@ -60,10 +62,16 @@ const routes: Array<RouteRecordRaw> = [
     component: ExpenseList,
   },
   {
+    path: '/',
+    name: 'Home',
+    component: DashboardPage,
+  },
+  {
     path: '/dashboard',
     name: 'DashboardPage',
     component: DashboardPage,
     meta: { requiresAuth: true }, // Mark as protected route
+    props: true,
   },
 ];
 
@@ -73,7 +81,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('token'); // Check if the user is authenticated
+  /**
+   * todo replace user with token later on.
+   */
+  // const isAuthenticated = !!localStorage.getItem('token'); // Check if the user is authenticated
+  const isAuthenticated = !!localStorage.getItem('user'); // Check if the user is authenticated
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
     !isAuthenticated

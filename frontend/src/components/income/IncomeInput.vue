@@ -42,9 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { reactive, watch, defineProps, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
-import { defineProps, defineEmits } from 'vue';
 
 const router = useRouter();
 const props = defineProps({
@@ -77,7 +76,6 @@ const backToList = () => {
   router.push({ name: 'IncomeList' });
 };
 
-// Simulate fetching user data (you would typically fetch this from an API)
 const submitIncome = () => {
   emit('submit', { ...localForm });
 };
@@ -102,7 +100,7 @@ const submitIncome = () => {
 
 .income-input button {
   padding: 0.5rem 1rem;
-  background-color: #4caf50; /* Green color */
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
@@ -110,6 +108,6 @@ const submitIncome = () => {
 }
 
 .income-input button:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #45a049;
 }
 </style>

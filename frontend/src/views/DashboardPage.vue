@@ -1,39 +1,27 @@
 <template>
-  <div class="dashboard">
-    <div class="logout-container">
-      <button @click="logout">Logout</button>
-    </div>
+  <div class="flex">
+    <SidebarMenu />
+    <main class="flex-1 p4">
+      <div class="dashboard">
+        <div class="logout-container">
+          <ProfileDropdown v-if="user.firstName" :user="user" />
+        </div>
+      </div>
+    </main>
   </div>
-  <SidebarMenu />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
 import SidebarMenu from './SidebarMenu.vue';
-
-const router = useRouter();
-const user = ref(null);
-
-// Simulate fetching user data (you would typically fetch this from an API)
-const fetchUserData = () => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    // Simulate a user object (replace this with an actual API call)
+import ProfileDropdown from './ProfileDropdown.vue';
+const user = ref({});
+onMounted(() => {
+  const loggedInUser = localStorage.getItem('user');
+  if (loggedInUser && typeof loggedInUser === 'string') {
+    user.value = JSON.parse(loggedInUser);
   }
-};
-
-// Call the function to fetch user data when the component is mounted
-fetchUserData();
-
-const logout = () => {
-  // Clear the token and user data
-  localStorage.removeItem('token');
-  user.value = null;
-
-  // Redirect to the login page
-  router.push('/login');
-};
+});
 </script>
 
 <style scoped>
@@ -64,21 +52,21 @@ const logout = () => {
   }
 
   .logout-container {
-    position: absolute; /* Position the container absolutely */
-    top: 1rem; /* Adjust the top position */
-    right: 1rem; /* Adjust the right position */
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
   .logout-container button {
-    padding: 0.5rem 1rem; /* Adjust padding for the button */
-    background-color: #f44336; /* Optional: Change button color */
-    color: white; /* Button text color */
-    border: none; /* Remove border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
+    padding: 0.5rem 1rem;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
   }
 
   .logout-container button:hover {
-    background-color: #d32f2f; /* Darker shade on hover */
+    background-color: #d32f2f;
   }
 }
 </style>

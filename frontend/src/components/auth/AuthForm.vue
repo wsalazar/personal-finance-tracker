@@ -1,59 +1,38 @@
 <template>
   <div class="auth-form">
     <div class="auth-tabs">
-      <button :class="{ active: isLogin }" @click="isLogin = true">
-        Login
-      </button>
       <button :class="{ active: !isLogin }" @click="isLogin = false">
         Register
       </button>
+      <button :class="{ active: isLogin }" @click="isLogin = true">
+        Login
+      </button>
     </div>
 
-    <form @submit.prevent="handleSubmit">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          id="email"
-          v-model="form.email"
-          type="email"
-          required
-          placeholder="Enter your email"
+    <div v-if="!isLogin">
+      <form @submit.prevent="handleSubmit">
+        <RegisterPage
+          :form="form"
+          :isLogin="!isLogin"
+          @handleRegistration="handleRegistrationData"
         />
-      </div>
+        <div class="error" v-if="error">{{ error }}</div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          id="password"
-          v-model="form.password"
-          type="password"
-          required
-          placeholder="Enter your password"
-          min="8"
-          max="16"
+        <button type="submit" :disabled="loading">Register</button>
+      </form>
+    </div>
+    <div v-else>
+      <form @submit.prevent="handleSubmit">
+        <LoginPage
+          :form="form"
+          :isLogin="isLogin"
+          @handleLogin="handleLoginData"
         />
-      </div>
+        <div class="error" v-if="error">{{ error }}</div>
 
-      <!-- Show only for registration -->
-      <div class="form-group" v-if="!isLogin">
-        <label for="confirmPassword">Confirm Password</label>
-        <input
-          id="confirmPassword"
-          v-model="form.confirmPassword"
-          type="password"
-          required
-          placeholder="Confirm your password"
-          min="8"
-          max="16"
-        />
-      </div>
-
-      <div class="error" v-if="error">{{ error }}</div>
-
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Loading...' : isLogin ? 'Login' : 'Register' }}
-      </button>
-    </form>
+        <button type="submit" :disabled="loading">Login</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -62,17 +41,41 @@ import { reactive, ref } from 'vue';
 import { api } from '@/services/api';
 import { useRouter } from 'vue-router';
 import { AxiosError } from 'axios';
+import { fetchUser } from '@/services/index';
+import LoginPage from './LoginPage.vue';
+import RegisterPage from './RegisterPage.vue';
 
 const router = useRouter();
-const isLogin = ref(true);
+const isLogin = ref(false);
 const loading = ref(false);
 const error = ref('');
 
 const form = reactive({
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
   confirmPassword: '',
 });
+
+const handleRegistrationData = (registrationData: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}) => {
+  form.firstName = registrationData.firstName;
+  form.lastName = registrationData.lastName;
+  form.email = registrationData.email;
+  form.password = registrationData.password;
+  form.confirmPassword = registrationData.confirmPassword;
+};
+
+const handleLoginData = (loginData: { email: string; password: string }) => {
+  form.email = loginData.email;
+  form.password = loginData.password;
+};
 
 const handleSubmit = async () => {
   error.value = '';
@@ -85,24 +88,22 @@ const handleSubmit = async () => {
        */
       throw new Error('Passwords do not match');
     }
-
     const endpoint = isLogin.value ? '/auth/login' : '/auth/register';
     const { data } = await api.post(endpoint, {
+      firstName: form.firstName,
+      lastName: form.lastName,
       email: form.email,
       password: form.password,
     });
-
-    // Store the token
-    localStorage.setItem('token', data);
-
-    console.log(data, localStorage.getItem('token'));
-
-    // Update axios default headers
-    api.defaults.headers.common['Authorization'] = `Bearer ${data}`;
-
-    // Redirect to dashboard
-    router.push('/dashboard');
+    const user = await fetchUser();
+    /**
+     * todo will use token later
+     */
+    // console.log(data, localStorage.getItem('token'));
+    localStorage.setItem('user', JSON.stringify(user));
+    router.push('/');
   } catch (err: unknown) {
+    console.log(err);
     if (err instanceof AxiosError) {
       error.value = err.response?.data?.message || 'Uh oh. Something happened.';
     } else if (err instanceof Error) {

@@ -7,6 +7,7 @@
 
 <script setup lang="ts">
 import AuthForm from '@/components/auth/AuthForm.vue';
+import { useStore } from 'vuex';
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Res,
+  Session,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';
+import { AuthGuard } from '@nestjs/passport';
+import { Request, Response } from 'express';
+import * as crypto from 'crypto';
 
 @Controller('auth')
 export class UserController {
@@ -11,15 +25,57 @@ export class UserController {
 
   @Post('register')
   async createUser(
-    @Body() body: { email: string; password: string },
+    @Body()
+    body: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+    },
+    @Req() req: any,
+    @Res() res: Response,
   ): Promise<string> {
     const newUser = await this.authService.create(body);
-    return this.authService.login(newUser);
+    const user = await this.authService.login(newUser, req);
+    return JSON.stringify({
+      firstName: user.firstName,
+      lastName: user.lastName,
+    });
   }
 
   @Post('login')
-  findOne(@Body() body: { email: string; password: string }): Promise<string> {
-    return this.authService.login(body);
+  async login(
+    @Body() body: { email: string; password: string; _id: string },
+    @Req() req: Request,
+    @Res() res: Response,
+    @Session() session: Record<string, string>,
+  ): Promise<void> {
+    const user = await this.authService.login(body, req);
+    const hashedEmail = crypto
+      .createHash('sha256')
+      .update(user.email)
+      .digest('hex');
+    const hashedCookie = `${hashedEmail}.${user._id}`;
+    res.cookie('cookie', hashedCookie, { httpOnly: true }); // use secure:true for production
+    session[hashedCookie] = JSON.stringify(user);
+    res.send('Logged in');
+  }
+
+  @Get('user')
+  async getUser(
+    @Req() req: Request,
+    @Session() session: Request<string, string>,
+    @Res() res: Response,
+  ): Promise<Response> {
+    /**
+     * todo Remove cookies code and replace with token
+     */
+    const cookie = req.cookies.cookie;
+    const sessionUser = JSON.parse(session[cookie]);
+    return res.send({
+      firstName: sessionUser.firstName,
+      lastName: sessionUser.lastName,
+    });
   }
 
   @Delete(':id')

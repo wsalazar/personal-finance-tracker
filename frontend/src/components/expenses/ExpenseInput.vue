@@ -11,6 +11,7 @@
     />
   </div>
 
+  <!-- possibly add category -->
   <!-- <div class="form-group">
     <label for="category">Category</label>
     <select id="category" v-model="form.category" required class="form-control">
@@ -80,7 +81,6 @@ const backToList = () => {
 };
 
 const submitExpense = () => {
-  console.log({ ...localForm });
   emits('submit', { ...localForm });
 };
 </script>

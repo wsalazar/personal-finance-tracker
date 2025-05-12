@@ -43,8 +43,8 @@ export class GoalService {
     };
   }
 
-  async getGoals(): Promise<Goal[]> {
-    return await this.goalModel.find({}).exec();
+  async getGoalsByUserId(userId: string): Promise<Goal[]> {
+    return await this.goalModel.find({ userId: userId }).exec();
   }
 
   async fetchGoalById(id: string): Promise<Goal> {
@@ -62,9 +62,9 @@ export class GoalService {
     }
   }
 
-  async checkIncomeExpenseExists(): Promise<boolean> {
-    const expenseExists = await this.payeeService.expenseCount();
-    const incomeExists = await this.budgetService.incomeCount();
+  async checkIncomeExpenseExists(userId: string): Promise<boolean> {
+    const expenseExists = await this.payeeService.expenseCount(userId);
+    const incomeExists = await this.budgetService.incomeCount(userId);
     return expenseExists && incomeExists;
   }
 }

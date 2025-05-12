@@ -42,8 +42,8 @@ export class BudgetService {
     };
   }
 
-  async getIncome(): Promise<Budget[]> {
-    return this.budgetModel.find().exec();
+  async getIncomeByUser(userId: string): Promise<Budget[]> {
+    return await this.budgetModel.find({ userId: userId }).exec();
   }
 
   async getBalance(): Promise<number> {
@@ -71,7 +71,7 @@ export class BudgetService {
     }
   }
 
-  async incomeCount(): Promise<boolean> {
-    return (await this.budgetModel.countDocuments()) > 0;
+  async incomeCount(userId: string): Promise<boolean> {
+    return (await this.budgetModel.countDocuments({ userId: userId })) > 0;
   }
 }

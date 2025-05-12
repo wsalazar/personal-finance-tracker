@@ -89,13 +89,16 @@ const handleSubmit = async () => {
       throw new Error('Passwords do not match');
     }
     const endpoint = isLogin.value ? '/auth/login' : '/auth/register';
+    console.log('form', form);
     const { data } = await api.post(endpoint, {
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,
       password: form.password,
     });
+    console.log('data', data);
     const user = await fetchUser();
+    console.log('user', user);
     /**
      * todo will use token later
      */

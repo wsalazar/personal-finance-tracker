@@ -15,14 +15,19 @@ import {
 export class GoalController {
   constructor(private readonly goalService: GoalService) {}
 
-  @Get('income/expense/verification')
-  checkIncomeExpensesExist(): Promise<boolean> {
-    return this.goalService.checkIncomeExpenseExists();
+  @Get('income/expense/verification/:userId')
+  async checkIncomeExpensesExist(
+    @Param('userId') userId: string,
+  ): Promise<boolean> {
+    return await this.goalService.checkIncomeExpenseExists(userId);
   }
-
-  @Get()
-  getAllIncome(): any {
-    return this.goalService.getGoals();
+  /**
+   * This has to be findAll for a particular user not all in the collection
+   * @returns
+   */
+  @Get(':userId')
+  getIncomeFromUser(@Param('userId') userId: string): any {
+    return this.goalService.getGoalsByUserId(userId);
   }
 
   @Get(':id')

@@ -5,14 +5,17 @@ export type BudgetDocument = HydratedDocument<Budget>;
 
 @Schema()
 export class Budget {
-  @Prop({required: true})
+  @Prop({ required: true })
   amount: number;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   incomeSource: string;
 
-  @Prop({required: true})
-  date: Date
+  @Prop({ required: true })
+  date: Date;
+
+  @Prop({ reqired: true })
+  userId: string;
 }
 
 export const BudgetSchema = SchemaFactory.createForClass(Budget);

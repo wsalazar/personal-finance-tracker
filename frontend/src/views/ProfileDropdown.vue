@@ -4,14 +4,14 @@
       Hello {{ user.firstName }} {{ user.lastName }}!
     </button>
     <div v-if="isOpen" class="dropdown-content">
-      <a @click="goToProfile">Profile</a>
-      <a @click="logout">Logout</a>
+      <a class="cursor-pointer" @click="goToProfile">Profile</a>
+      <a class="cursor-pointer" @click="logout">Logout</a>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 const isOpen = ref(false);
@@ -35,7 +35,12 @@ const goToProfile = () => {
 };
 
 const logout = () => {
+  localStorage.clear();
+  // localStorage.setItem('user', JSON.stringify(user));
   localStorage.removeItem('user'); // Clear user data
+  // props.user.firstName = null;
+  // props.user.lastName = null;
+
   router.push('/login'); // Redirect to login page
 };
 </script>

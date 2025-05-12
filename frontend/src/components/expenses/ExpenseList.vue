@@ -2,7 +2,18 @@
   <div class="flex">
     <SidebarMenu />
     <main class="flex-1 p4">
-      <div id="expense-list">
+      <div class="logout-container">
+        <ProfileDropdown v-if="user && user.firstName" :user="user" />
+      </div>
+      <div class="">
+        <button
+          class="px-4 py-2 mt-5 font-semibold text-white transition duration-200 bg-blue-500 rounded add-expense hover:bg-blue-600"
+          @click="addExpense"
+        >
+          Add Expense
+        </button>
+      </div>
+      <div id="expense-list" class="mt-20">
         <table
           class="min-w-full border border-collapse border-gray-300 table-auto"
         >
@@ -44,12 +55,6 @@
             </tr>
           </tbody>
         </table>
-        <button
-          class="px-4 py-2 mt-20 font-semibold text-white transition duration-200 bg-blue-500 rounded add-expense hover:bg-blue-600"
-          @click="addExpense"
-        >
-          Add Expense
-        </button>
       </div>
     </main>
   </div>
@@ -62,8 +67,10 @@ import { onMounted, ref } from 'vue';
 import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
 import { formatDateForList } from '@/helpers/utils';
+import ProfileDropdown from '@/views/ProfileDropdown.vue';
 
 const expenseList = ref([]);
+const user = ref<{ user: string } | null>(null);
 
 const editExpense = async (id: string) => {
   router.push({ name: 'ExpenseEdit', params: { id: id } });
@@ -80,11 +87,14 @@ const deleteExpense = async (id: string) => {
     console.error(err);
   }
 };
-
 const fetchExpenseList = async () => {
   try {
-    const response = await api.get('/expenses');
-    expenseList.value = response.data;
+    if (user.value && user.value.userId) {
+      const response = await api.get(`/expenses/${user.value.userId}`);
+      expenseList.value = response.data;
+    } else {
+      console.error('User ID is not available');
+    }
   } catch (err) {
     /**
      * todo add toaster
@@ -93,6 +103,8 @@ const fetchExpenseList = async () => {
   }
 };
 onMounted(() => {
+  const loggedInUser = localStorage.getItem('user');
+  user.value = loggedInUser ? JSON.parse(loggedInUser) : null;
   fetchExpenseList();
 });
 
@@ -100,3 +112,22 @@ const addExpense = () => {
   router.push({ name: 'ExpenseForm' });
 };
 </script>
+<style scoped>
+.logout-container {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+.logout-container button {
+  padding: 0.5rem 1rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-container button:hover {
+  background-color: #d32f2f;
+}
+</style>

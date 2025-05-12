@@ -26,22 +26,29 @@ const form = reactive({
   amount: 0,
   incomeSource: '',
   date: new Date().toISOString().split('T')[0],
+  userId: '',
 });
 
 interface IncomeData {
   amount: number;
   incomeSource: string;
   date: string;
+  userId: number;
 }
 
 const handleIncomeSubmit = (incomeData: IncomeData) => {
+  const user = localStorage.getItem('user');
+  const loggedInUser = user ? JSON.parse(user) : null;
+  console.log(loggedInUser);
   form.amount = incomeData.amount;
   form.incomeSource = incomeData.incomeSource;
   form.date = incomeData.date;
+  form.userId = loggedInUser.userId;
 };
 
 onMounted(async () => {
   const id = route.params.id;
+  console.log('id is here:', id);
   if (id) {
     isDirty.value = true;
     const response = await fetchIncomeById(id);
@@ -55,7 +62,7 @@ onMounted(async () => {
 
 const fetchIncomeById = async (id: string) => {
   try {
-    return await api.get('/income/' + id);
+    return await api.get('/income/single-item/' + id);
   } catch (err) {
     console.error(err);
   }

@@ -32,7 +32,11 @@ const dashboard = () => {
 
 const shouldGoalsBeEnabled = async () => {
   try {
-    const result = await api.get('goal/income/expense/verification');
+    const user = localStorage.getItem('user');
+    const loggedInUser = user ? JSON.parse(user) : null;
+    const result = await api.get(
+      `goal/income/expense/verification/${loggedInUser.userId}`,
+    );
     isGoalsDisabled.value = !result.data;
   } catch (err) {
     console.log(err);

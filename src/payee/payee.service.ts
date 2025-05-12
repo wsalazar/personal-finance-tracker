@@ -14,8 +14,8 @@ export class PayeeService {
     return createPayee.save();
   }
 
-  findAll(): Promise<Payee[]> {
-    return this.payeeModel.find().exec();
+  async getExpensesByUser(userId: string): Promise<Payee[]> {
+    return await this.payeeModel.find({ userId: userId }).exec();
   }
 
   findOne(id: string) {
@@ -32,7 +32,7 @@ export class PayeeService {
     return this.payeeModel.deleteOne({ _id: Object(id) }).exec();
   }
 
-  async expenseCount(): Promise<boolean> {
-    return (await this.payeeModel.countDocuments()) > 0;
+  async expenseCount(userId: string): Promise<boolean> {
+    return (await this.payeeModel.countDocuments({ userId: userId })) > 0;
   }
 }

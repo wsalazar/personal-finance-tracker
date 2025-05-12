@@ -25,18 +25,23 @@ const form = reactive({
   amount: 0,
   name: '',
   date: new Date().toISOString().split('T')[0],
+  userId: '',
 });
 
 interface GoalData {
   amount: number;
   name: string;
   date: string;
+  userId: string;
 }
 
 const handleIncomingGoal = (goalData: GoalData) => {
+  const user = localStorage.getItem('user');
+  const loggedInUser = user ? JSON.parse(user) : null;
   form.amount = goalData.amount;
   form.date = goalData.date;
   form.name = goalData.name;
+  form.userId = loggedInUser.userId;
 };
 
 onMounted(async () => {

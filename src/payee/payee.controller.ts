@@ -3,13 +3,14 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { PayeeService } from './payee.service';
 import { CreatePayeeDto } from '../dto/create-payee.dto';
 import { UpdatePayeeDto } from '../dto/update-payee.dto';
+import { Payee } from './entities/payee.entity';
 
 @Controller('expenses')
 export class PayeeController {
@@ -20,9 +21,13 @@ export class PayeeController {
     return this.payeeService.create(createPayeeDto);
   }
 
-  @Get()
-  findAll() {
-    return this.payeeService.findAll();
+  /**
+   * This has to be findAll for a particular user not all in the collection
+   * @returns
+   */
+  @Get(':userId')
+  async findExpensesByUser(@Param('userId') userId: string): Promise<Payee[]> {
+    return await this.payeeService.getExpensesByUser(userId);
   }
 
   @Get(':id')
@@ -30,7 +35,7 @@ export class PayeeController {
     return this.payeeService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updatePayeeDto: UpdatePayeeDto) {
     return this.payeeService.update(id, updatePayeeDto);
   }

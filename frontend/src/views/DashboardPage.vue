@@ -15,11 +15,43 @@
 import { ref, onMounted } from 'vue';
 import SidebarMenu from './SidebarMenu.vue';
 import ProfileDropdown from './ProfileDropdown.vue';
+import { api } from '@/services/api';
 const user = ref({});
+console.log('hah');
+
+// const arr = [5, 2, 7, 1, 9, 3, 4];
+// function sort(arr: number[]) {
+//   for (let i = 0; i < arr.length; i++) {
+//     setTimeout(() => console.log(arr[i]), arr[i]);
+//   }
+// }
+// sort(arr);
+// // function sort(arr: number[]) {
+// //   for (var i = 0; i < arr.length; i++) {
+// //     (function (i) {
+// //       setTimeout(() => console.log(arr[i]), arr[i]);
+// //     })(i);
+// //   }
+// // }
+// // sort(arr);
+
+// for (var j = 0; j < 3; j++) {
+//   setTimeout(() => console.log(j), 1000);
+// }
+
+// console.log('Start');
+
+// setTimeout(() => {
+//   console.log('Timeout executed');
+// }, 1000);
+
+// console.log('End');
+
 onMounted(() => {
   const loggedInUser = localStorage.getItem('user');
   if (loggedInUser && typeof loggedInUser === 'string') {
     user.value = JSON.parse(loggedInUser);
+    api.get(`tracker/${user.value.userId}`).then((data) => console.log(data));
   }
 });
 </script>

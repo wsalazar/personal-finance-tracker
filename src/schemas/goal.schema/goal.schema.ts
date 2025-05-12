@@ -13,6 +13,9 @@ export class Goal {
 
   @Prop({ required: true })
   date: Date;
+
+  @Prop({ required: true })
+  userId: string;
 }
 
 export const GoalSchema = SchemaFactory.createForClass(Goal);

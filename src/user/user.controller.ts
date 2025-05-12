@@ -31,15 +31,25 @@ export class UserController {
       lastName: string;
       email: string;
       password: string;
+      _id: string;
     },
     @Req() req: any,
     @Res() res: Response,
-  ): Promise<string> {
-    const newUser = await this.authService.create(body);
-    const user = await this.authService.login(newUser, req);
-    return JSON.stringify({
+    @Session() session: Record<string, string>,
+  ): Promise<Response> {
+    await this.authService.create(body);
+    const user = await this.authService.login(body, req);
+    const hashedEmail = crypto
+      .createHash('sha256')
+      .update(user.email)
+      .digest('hex');
+    const hashedCookie = `${hashedEmail}.${user._id}`;
+    res.cookie('cookie', hashedCookie, { httpOnly: true }); // use secure:true for production
+    session[hashedCookie] = JSON.stringify(user);
+    return res.send({
       firstName: user.firstName,
       lastName: user.lastName,
+      userId: user._id,
     });
   }
 
@@ -75,6 +85,7 @@ export class UserController {
     return res.send({
       firstName: sessionUser.firstName,
       lastName: sessionUser.lastName,
+      userId: sessionUser._id,
     });
   }
 

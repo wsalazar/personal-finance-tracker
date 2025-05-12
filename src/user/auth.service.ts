@@ -5,12 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, mongo } from 'mongoose';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { User, UserDocument } from 'src/schemas/user.schema/user.schema';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -34,8 +35,8 @@ export class AuthService {
     const newUser = {
       ...createUserDto,
       password: hashedPassword,
+      _id: new mongoose.Types.ObjectId(),
     };
-
     return await this.userService.register(newUser);
   }
 

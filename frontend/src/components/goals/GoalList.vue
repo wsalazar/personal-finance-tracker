@@ -87,7 +87,7 @@ const deleteGoal = async (id: string) => {
 const fetchGoalList = async () => {
   try {
     if (user.value && user.value.userId) {
-      const response = await api.get(`/goal/${user.value.userId}`);
+      const response = await api.get(`/goals/${user.value.userId}`);
       goalList.value = response.data;
     }
   } catch (err) {

@@ -19,16 +19,17 @@ export class TrackerService {
 
   async getFinanceTracker(
     userId: string,
-  ): Promise<{ goalName: string; percentage: number }[]> {
+  ): Promise<{ goalName: string; percentage: number; id: string }[]> {
     // const percentages = [];
     const goals = await this.goalService.getGoalsByUserId(userId);
     const incomes = await this.budgetService.getIncomeByUser(userId);
     const expenses = await this.payeeService.getExpensesByUser(userId);
-    const netIncome = this.calculateNetIncome(incomes, expenses);
+    const netIncome = this.calculateNetIncome(incomes, expenses, goals);
     return goals.map((goal) => {
       return {
         goalName: goal.name,
         percentage: this.calculatePercentage(netIncome, goal),
+        id: goal._id,
       };
     });
   }
@@ -42,27 +43,46 @@ export class TrackerService {
   calculateNetIncome(
     incomes: Budget[],
     expenses: Payee[],
+    goals: Goal[],
   ): Array<{ date: string; netIncome: number }> {
-    /**
-     * I want to iterate over expenses and income and if the expense has a larger date then the income I want to subtract that the income from the expense.
-     *
-     */
-    let netIncome: number = 0;
-    let expenseDates: string[] = [];
-    for (const expense of expenses) {
-      for (const income of incomes) {
-        if (expense.date >= income.date) {
-          expenseDates.push(expense.date.toISOString());
-          netIncome = income.amount - expense.amount + netIncome;
-        }
+    const sortedGoals: Goal[] = [...goals].sort(
+      (a, b) => a.date.getTime() - b.date.getTime(),
+    );
+    const sortedIncomes: Budget[] = [...incomes].sort(
+      (a, b) => a.date.getTime() - b.date.getTime(),
+    );
+    const sortedExpenses: Payee[] = [...expenses].sort(
+      (a, b) => a.date.getTime() - b.date.getTime(),
+    );
+
+    const netIncomes: Array<{ date: string; netIncome: number }> = [];
+    let totalIncome: number = 0;
+    let totalExpenses: number = 0;
+    let currentIncomeIndex: number = 0;
+    let currentExpenseIndex: number = 0;
+
+    for (const sortedGoal of sortedGoals) {
+      while (
+        currentIncomeIndex < sortedIncomes.length &&
+        sortedIncomes[currentIncomeIndex].date <= sortedGoal.date
+      ) {
+        totalIncome += sortedIncomes[currentIncomeIndex].amount;
+        currentIncomeIndex++;
       }
+      while (
+        currentExpenseIndex < sortedExpenses.length &&
+        sortedExpenses[currentExpenseIndex].date <= sortedGoal.date
+      ) {
+        totalExpenses += sortedExpenses[currentExpenseIndex].amount;
+        currentExpenseIndex++;
+      }
+      netIncomes.push({
+        date: sortedGoal.date.toISOString().split('T')[0],
+        netIncome: totalIncome - totalExpenses,
+      });
     }
-    return [
-      {
-        date: new Date().toISOString().split('T')[0],
-        netIncome: netIncome,
-      },
-    ];
+
+    return netIncomes;
   }
 
   calculatePercentage(
@@ -71,7 +91,7 @@ export class TrackerService {
   ) {
     const goalDate = goal.date.toISOString().split('T')[0];
     for (const income of netIncome) {
-      if (goalDate > income.date) {
+      if (goalDate === income.date) {
         return parseFloat(((goal.amount / income.netIncome) * 100).toFixed(2));
       }
     }

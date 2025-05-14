@@ -48,7 +48,7 @@ onMounted(async () => {
   const id = route.params.id;
   if (id) {
     isDirty.value = true;
-    const response = await api.get(`/goal/${id}`);
+    const response = await api.get(`/goals/goal/${id}`);
     const date = formatDateForEdit(response?.data.date);
     Object.assign(goalData, {
       ...response?.data,
@@ -60,9 +60,9 @@ onMounted(async () => {
 const handleSubmit = async () => {
   try {
     if (isDirty.value) {
-      await api.put(`/goal/${route.params.id}`, form);
+      await api.put(`/goals/${route.params.id}`, form);
     } else {
-      await api.post('/goal', form);
+      await api.post('/goals', form);
     }
     form.amount = 0;
     form.name = '';

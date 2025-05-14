@@ -11,11 +11,11 @@ import {
   Put,
 } from '@nestjs/common';
 
-@Controller('goal')
+@Controller('goals')
 export class GoalController {
   constructor(private readonly goalService: GoalService) {}
 
-  @Get('income/expense/verification/:userId')
+  @Get('verification/:userId')
   async checkIncomeExpensesExist(
     @Param('userId') userId: string,
   ): Promise<boolean> {
@@ -26,11 +26,11 @@ export class GoalController {
    * @returns
    */
   @Get(':userId')
-  getIncomeFromUser(@Param('userId') userId: string): any {
+  getGoals(@Param('userId') userId: string): Promise<Goal[]> {
     return this.goalService.getGoalsByUserId(userId);
   }
 
-  @Get(':id')
+  @Get('goal/:id')
   getGoal(@Param('id') id: string): Promise<Goal> {
     return this.goalService.fetchGoalById(id);
   }
@@ -44,7 +44,11 @@ export class GoalController {
   editIncome(
     @Param('id') id: string,
     @Body() editGoalDto: Partial<CreateGoalDto>,
-  ): any {
+  ): Promise<{
+    acknowledged: boolean;
+    matchedCount: number;
+    modifiedCount: number;
+  }> {
     return this.goalService.edit(id, editGoalDto);
   }
 

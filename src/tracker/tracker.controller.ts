@@ -8,7 +8,7 @@ export class TrackerController {
   @Get(':userId')
   async findTrackedFinancesByUserId(
     @Param('userId') userId: string,
-  ): Promise<{ goalName: string; percentage: number }[]> {
+  ): Promise<{ goalName: string; percentage: number; id: string }[]> {
     /**
      * todo Once the goal has been met it should be moved to the expense category.
      */

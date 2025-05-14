@@ -109,9 +109,7 @@ const fetchIncomeList = async () => {
     if (user.value && user.value.userId) {
       const response = await api.get(`/income/user/${user.value.userId}`);
       incomeList.value = response.data;
-      incomeList.value.forEach((v) => {
-        totalAmount.value += v.amount;
-      });
+      incomeList.value.forEach((v) => (totalAmount.value += v.amount));
     }
   } catch (err) {
     console.error('Error fetching data');

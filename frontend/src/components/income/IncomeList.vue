@@ -71,7 +71,6 @@ const incomeList = ref([]);
 const user = ref<{ user: string } | null>(null);
 
 const editIncome = async (id: string) => {
-  console.log(id);
   router.push({ name: 'IncomeEdit', params: { id: id } });
 };
 

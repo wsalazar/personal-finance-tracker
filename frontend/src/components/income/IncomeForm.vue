@@ -39,7 +39,6 @@ interface IncomeData {
 const handleIncomeSubmit = (incomeData: IncomeData) => {
   const user = localStorage.getItem('user');
   const loggedInUser = user ? JSON.parse(user) : null;
-  console.log(loggedInUser);
   form.amount = incomeData.amount;
   form.incomeSource = incomeData.incomeSource;
   form.date = incomeData.date;

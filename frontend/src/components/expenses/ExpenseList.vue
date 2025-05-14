@@ -54,6 +54,14 @@
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td>${{ totalAmount }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </main>
@@ -69,8 +77,21 @@ import SidebarMenu from '@/views/SidebarMenu.vue';
 import { formatDateForList } from '@/helpers/utils';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
 
-const expenseList = ref([]);
-const user = ref<{ user: string } | null>(null);
+interface Expense {
+  amount: number;
+  description: string;
+  _id: string;
+  date: Date;
+}
+
+interface User {
+  firstName: string;
+  userId: string;
+}
+
+const expenseList = ref<Expense[]>([]);
+const user = ref<User | null>(null);
+let totalAmount = ref(0);
 
 const editExpense = async (id: string) => {
   router.push({ name: 'ExpenseEdit', params: { id: id } });
@@ -92,6 +113,7 @@ const fetchExpenseList = async () => {
     if (user.value && user.value.userId) {
       const response = await api.get(`/expenses/${user.value.userId}`);
       expenseList.value = response.data;
+      expenseList.value.forEach((v) => (totalAmount.value += v.amount));
     } else {
       console.error('User ID is not available');
     }

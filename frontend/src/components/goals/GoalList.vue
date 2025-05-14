@@ -50,6 +50,14 @@
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td>${{ totalAmount }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </main>
@@ -64,9 +72,24 @@ import { formatDateForList } from '@/helpers/utils';
 import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
-const user = ref<{ user: string } | null>(null);
 
-const goalList = ref([]);
+interface User {
+  firstName: string;
+  _id: string;
+  userId: string;
+}
+
+interface Goal {
+  amount: number;
+  _id: string;
+  date: Date;
+  name: string;
+}
+
+const user = ref<User | null>(null);
+let totalAmount = ref(0);
+
+const goalList = ref<Goal[]>([]);
 
 const editGoal = async (id: string) => {
   router.push({ name: 'GoalEdit', params: { id: id } });
@@ -89,6 +112,7 @@ const fetchGoalList = async () => {
     if (user.value && user.value.userId) {
       const response = await api.get(`/goals/${user.value.userId}`);
       goalList.value = response.data;
+      goalList.value.forEach((v) => (totalAmount.value += v.amount));
     }
   } catch (err) {
     console.error('Error fetching data');

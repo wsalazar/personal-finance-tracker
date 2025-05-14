@@ -52,6 +52,14 @@
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td>${{ totalAmount }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </main>
@@ -67,8 +75,21 @@ import SidebarMenu from '@/views/SidebarMenu.vue';
 import { formatDateForList } from '@/helpers/utils';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
 
-const incomeList = ref([]);
-const user = ref<{ user: string } | null>(null);
+interface Income {
+  _id: string;
+  incomeSource: string;
+  amount: number;
+  date: Date;
+}
+
+interface User {
+  userId: string;
+  firstName: string;
+}
+
+const incomeList = ref<Income[]>([]);
+const totalAmount = ref(0);
+const user = ref<User | null>(null);
 
 const editIncome = async (id: string) => {
   router.push({ name: 'IncomeEdit', params: { id: id } });
@@ -88,6 +109,9 @@ const fetchIncomeList = async () => {
     if (user.value && user.value.userId) {
       const response = await api.get(`/income/user/${user.value.userId}`);
       incomeList.value = response.data;
+      incomeList.value.forEach((v) => {
+        totalAmount.value += v.amount;
+      });
     }
   } catch (err) {
     console.error('Error fetching data');

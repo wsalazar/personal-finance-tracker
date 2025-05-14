@@ -25,25 +25,30 @@ const form = reactive({
   amount: 0,
   name: '',
   date: new Date().toISOString().split('T')[0],
+  userId: '',
 });
 
 interface GoalData {
   amount: number;
   name: string;
   date: string;
+  userId: string;
 }
 
 const handleIncomingGoal = (goalData: GoalData) => {
+  const user = localStorage.getItem('user');
+  const loggedInUser = user ? JSON.parse(user) : null;
   form.amount = goalData.amount;
   form.date = goalData.date;
   form.name = goalData.name;
+  form.userId = loggedInUser.userId;
 };
 
 onMounted(async () => {
   const id = route.params.id;
   if (id) {
     isDirty.value = true;
-    const response = await api.get(`/goal/${id}`);
+    const response = await api.get(`/goals/goal/${id}`);
     const date = formatDateForEdit(response?.data.date);
     Object.assign(goalData, {
       ...response?.data,
@@ -55,9 +60,9 @@ onMounted(async () => {
 const handleSubmit = async () => {
   try {
     if (isDirty.value) {
-      await api.put(`/goal/${route.params.id}`, form);
+      await api.put(`/goals/${route.params.id}`, form);
     } else {
-      await api.post('/goal', form);
+      await api.post('/goals', form);
     }
     form.amount = 0;
     form.name = '';

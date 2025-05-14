@@ -11,8 +11,9 @@ export class CreateBudgetDto {
 
   @IsNotEmpty()
   @IsDate()
-  date: Date
-  
+  date: Date;
 
-
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
 }

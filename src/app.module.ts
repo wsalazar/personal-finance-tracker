@@ -8,6 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { GoalModule } from './goals/goal.module';
+import { TrackerModule } from './tracker/tracker.module';
+import { TrackerController } from './tracker/tracker.controller';
 
 /**
  *  MongooseModule.forRoot({
@@ -21,10 +23,12 @@ import { GoalModule } from './goals/goal.module';
    * it's a nestjs feature to link modules together
    */
   imports: [
-    MongooseModule.forRoot(
-      'mongodb://admin:admin@localhost:27017/budget-tracker',
-      { dbName: 'budget-tracker' },
-    ),
+    MongooseModule.forRoot(process.env.MONGODB_URI, {
+      autoIndex: true,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    }),
     /**
      * I can add this here if I want to access the JwtService globally throughout the entire application
      * todo add this a little later
@@ -38,8 +42,9 @@ import { GoalModule } from './goals/goal.module';
     PayeeModule,
     UserModule,
     AuthModule,
+    TrackerModule,
   ],
-  controllers: [],
+  controllers: [TrackerController],
   providers: [
     // {
     //   provide: APP_GUARD,

@@ -11,21 +11,26 @@ import {
   Put,
 } from '@nestjs/common';
 
-@Controller('goal')
+@Controller('goals')
 export class GoalController {
   constructor(private readonly goalService: GoalService) {}
 
-  @Get('income/expense/verification')
-  checkIncomeExpensesExist(): Promise<boolean> {
-    return this.goalService.checkIncomeExpenseExists();
+  @Get('verification/:userId')
+  async checkIncomeExpensesExist(
+    @Param('userId') userId: string,
+  ): Promise<boolean> {
+    return await this.goalService.checkIncomeExpenseExists(userId);
+  }
+  /**
+   * This has to be findAll for a particular user not all in the collection
+   * @returns
+   */
+  @Get(':userId')
+  getGoals(@Param('userId') userId: string): Promise<Goal[]> {
+    return this.goalService.getGoalsByUserId(userId);
   }
 
-  @Get()
-  getAllIncome(): any {
-    return this.goalService.getGoals();
-  }
-
-  @Get(':id')
+  @Get('goal/:id')
   getGoal(@Param('id') id: string): Promise<Goal> {
     return this.goalService.fetchGoalById(id);
   }
@@ -39,7 +44,11 @@ export class GoalController {
   editIncome(
     @Param('id') id: string,
     @Body() editGoalDto: Partial<CreateGoalDto>,
-  ): any {
+  ): Promise<{
+    acknowledged: boolean;
+    matchedCount: number;
+    modifiedCount: number;
+  }> {
     return this.goalService.edit(id, editGoalDto);
   }
 

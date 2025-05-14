@@ -12,4 +12,8 @@ export class CreateGoalDto {
   @IsNotEmpty()
   @IsDate()
   date: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
 }

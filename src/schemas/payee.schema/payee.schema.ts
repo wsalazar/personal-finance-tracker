@@ -13,6 +13,9 @@ export class Payee {
 
   @Prop()
   date: Date;
+
+  @Prop()
+  userId: string;
 }
 
 export const PayeeSchema = SchemaFactory.createForClass(Payee);

@@ -25,18 +25,23 @@ const form = reactive({
   amount: 0,
   description: '',
   date: new Date().toISOString().split('T')[0],
+  userId: '',
 });
 
 interface ExpenseData {
   amount: number;
   description: string;
   date: string;
+  userId: number;
 }
 
 const handleIncomingExpense = (expenseData: ExpenseData) => {
+  const user = localStorage.getItem('user');
+  const loggedInUser = user ? JSON.parse(user) : null;
   form.amount = expenseData.amount;
   form.date = expenseData.date;
   form.description = expenseData.description;
+  form.userId = loggedInUser.userId;
 };
 
 onMounted(async () => {

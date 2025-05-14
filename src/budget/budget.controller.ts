@@ -17,18 +17,22 @@ import { Budget } from 'src/schemas/budget.schema/budget.schema';
 export class BudgetController {
   constructor(private readonly budgetService: BudgetService) {}
 
-  @Get()
-  getAllIncome(): any {
-    return this.budgetService.getIncome();
+  /**
+   * This has to be findAll for a particular user not all in the collection
+   * @returns
+   */
+  @Get('/user/:userId')
+  async getAllIncomeByUser(@Param('userId') userId: string): Promise<Budget[]> {
+    return await this.budgetService.getIncomeByUser(userId);
   }
 
-  @Get(':id')
-  getIncome(@Param('id') id: string): Promise<Budget> {
-    return this.budgetService.fetchIncomeById(id);
+  @Get('single-item/:id')
+  async getIncomeById(@Param('id') id: string): Promise<Budget> {
+    return await this.budgetService.fetchIncomeById(id);
   }
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   insertBudget(@Body() createBudgetDto: CreateBudgetDto): any {
     return this.budgetService.create(createBudgetDto);
   }

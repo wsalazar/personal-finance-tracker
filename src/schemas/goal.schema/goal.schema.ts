@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Document } from 'mongoose';
 
-export type GoalDocument = HydratedDocument<Goal>;
+export type GoalDocument = Goal & Document;
 
 @Schema()
-export class Goal {
+export class Goal extends Document {
+  _id: string;
+
   @Prop({ required: true })
   amount: number;
 
@@ -13,6 +15,9 @@ export class Goal {
 
   @Prop({ required: true })
   date: Date;
+
+  @Prop({ required: true })
+  userId: string;
 }
 
 export const GoalSchema = SchemaFactory.createForClass(Goal);

@@ -2,7 +2,7 @@
   <div class="flex">
     <SidebarMenu />
     <main class="flex-1 p4">
-      <div class="logout-container">
+      <div class="absolute top-4 right-4">
         <ProfileDropdown v-if="user && user.firstName" :user="user" />
       </div>
       <button
@@ -125,22 +125,3 @@ const addIncome = () => {
   router.push({ name: 'IncomeForm' });
 };
 </script>
-<style scoped>
-.logout-container {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-.logout-container button {
-  padding: 0.5rem 1rem;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.logout-container button:hover {
-  background-color: #d32f2f;
-}
-</style>

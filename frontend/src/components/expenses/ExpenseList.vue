@@ -44,7 +44,7 @@
                     v-model="editingValue"
                     @blur="saveEdit(expense._id)"
                     @keyup.enter="saveEdit(expense._id)"
-                    @keyup.esc="cancelEdit"
+                    @keyup.esc="cancelEdit()"
                     class="w-full border border-blue-500 rounded pl-28 focus:caret-blue-500 cursor-text"
                     ref="editInput"
                     autofocus
@@ -66,7 +66,7 @@
                     v-model="editingValue"
                     @blur="saveEdit(expense._id)"
                     @keyup.enter="saveEdit(expense._id)"
-                    @keyup.esc="cancelEdit"
+                    @keyup.esc="cancelEdit()"
                     class="w-full border border-blue-500 rounded pl-28 focus:caret-blue-500 cursor-text"
                     ref="editInput"
                     autofocus
@@ -176,10 +176,10 @@ const saveEdit = async (id: string) => {
   }
 };
 
-const cancelEdit = (expense: Expense) => {
+const cancelEdit = (expense?: Expense) => {
   editingId.value = null;
   editingValue.value = '';
-  if (editingField.value === 'date') {
+  if (editingField.value === 'date' && expense) {
     editingValue.value = new Date(expense.date).toISOString().split('T')[0];
   }
 };

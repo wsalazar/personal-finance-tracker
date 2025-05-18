@@ -122,7 +122,6 @@
 import router from '@/router';
 import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
-import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
 import { formatDateForList } from '@/helpers/utils';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
@@ -182,10 +181,6 @@ const cancelEdit = (expense?: Expense) => {
   if (editingField.value === 'date' && expense) {
     editingValue.value = new Date(expense.date).toISOString().split('T')[0];
   }
-};
-
-const editExpense = async (id: string) => {
-  router.push({ name: 'ExpenseEdit', params: { id: id } });
 };
 
 const deleteExpense = async (id: string) => {

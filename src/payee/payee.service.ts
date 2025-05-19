@@ -33,7 +33,6 @@ export class PayeeService {
     updateData: { field: string; value: string | number | Date },
   ): void {
     const update = { $set: updateData };
-    console.log(update);
     this.payeeModel
       .findByIdAndUpdate({ _id: Object(id) }, update, { new: true })
       .exec();

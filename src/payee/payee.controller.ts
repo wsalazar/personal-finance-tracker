@@ -6,11 +6,13 @@ import {
   Param,
   Delete,
   Put,
+  Patch,
 } from '@nestjs/common';
 import { PayeeService } from './payee.service';
 import { CreatePayeeDto } from '../dto/create-payee.dto';
 import { UpdatePayeeDto } from '../dto/update-payee.dto';
 import { Payee } from './entities/payee.entity';
+import path from 'path';
 
 @Controller('expenses')
 export class PayeeController {
@@ -35,9 +37,20 @@ export class PayeeController {
     return this.payeeService.findOne(id);
   }
 
+  @Patch(':id')
+  updateField(
+    @Param('id') id: string,
+    @Body() updateData: { field: string; value: string | number | Date },
+  ): void {
+    this.payeeService.updateField(id, updateData);
+  }
+
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatePayeeDto: UpdatePayeeDto) {
-    return this.payeeService.update(id, updatePayeeDto);
+  update(
+    @Param('id') id: string,
+    @Body() updatePayeeDto: UpdatePayeeDto,
+  ): void {
+    this.payeeService.update(id, updatePayeeDto);
   }
 
   @Delete(':id')

@@ -7,6 +7,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -38,6 +39,14 @@ export class GoalController {
   @Post()
   insertGoal(@Body() createBudgetDto: CreateGoalDto): void {
     this.goalService.create(createBudgetDto);
+  }
+
+  @Patch(':id')
+  updateField(
+    @Param('id') id: string,
+    @Body() updateData: { field: string; value: string | number | Date },
+  ): void {
+    this.goalService.updateField(id, updateData);
   }
 
   @Put(':id')

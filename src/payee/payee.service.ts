@@ -18,13 +18,23 @@ export class PayeeService {
     return await this.payeeModel.find({ userId: userId }).exec();
   }
 
-  findOne(id: string) {
+  findOne(id: string): Promise<Payee> {
     return this.payeeModel.findOne({ _id: Object(id) }).exec();
   }
 
-  update(id: string, updatePayeeDto: UpdatePayeeDto) {
-    return this.payeeModel
+  update(id: string, updatePayeeDto: UpdatePayeeDto): void {
+    this.payeeModel
       .updateOne({ _id: Object(id) }, { $set: updatePayeeDto })
+      .exec();
+  }
+
+  updateField(
+    id: string,
+    updateData: { field: string; value: string | number | Date },
+  ): void {
+    const update = { $set: updateData };
+    this.payeeModel
+      .findByIdAndUpdate({ _id: Object(id) }, update, { new: true })
       .exec();
   }
 

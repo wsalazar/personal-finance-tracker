@@ -20,26 +20,56 @@
               <th class="w-1/4 p-2 border border-gray-300">Name</th>
               <th class="w-1/4 p-2 border border-gray-300">Amount</th>
               <th class="w-1/4 p-2 border border-gray-300">Date</th>
-              <th class="w-1/4 p-2 border border-gray-300">Edit</th>
               <th class="w-1/4 p-2 border border-gray-300">Delete</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="goal in goalList" :key="goal._id">
-              <td class="p-0.5 border border-gray-300 w-20">{{ goal.name }}</td>
-              <td class="p-0.5 border border-gray-300 w-20">
-                ${{ goal.amount }}
-              </td>
-              <td class="p-0.5 border border-gray-300 w-20">
-                {{ formatDateForList(goal.date) }}
+              <td
+                class="p-0.5 border border-gray-300 w-20"
+                @click="editGoalCell(goal.name, 'name', goal._id)"
+              >
+                <InlineEditing
+                  :data="goal"
+                  editingField="name"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="editingId === goal._id && editingField === 'name'"
+                  :editingId="goal._id"
+                  inputType="text"
+                  v-model:editingValue="editingValue"
+                />
               </td>
               <td
-                class="flex items-center justify-center p-2 border border-gray-150 w-30"
-                @click="editGoal(goal._id)"
+                class="p-0.5 border border-gray-300 w-20"
+                @click="editGoalCell(goal.amount, 'amount', goal._id)"
               >
-                <PencilSquareIcon
-                  className=" text-gray-500"
-                  style="width: 30px; height: 30px; cursor: pointer"
+                <InlineEditing
+                  :data="goal"
+                  editingField="amount"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
+                    editingId === goal._id && editingField === 'amount'
+                  "
+                  :editingId="goal._id"
+                  inputType="text"
+                  v-model:editingValue="editingValue"
+                />
+              </td>
+              <td
+                class="p-0.5 border border-gray-300 w-20"
+                @click="editGoalCell(goal.date, 'date', goal._id)"
+              >
+                <InlineEditing
+                  :data="goal"
+                  editingField="date"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="editingId === goal._id && editingField === 'date'"
+                  :editingId="goal._id"
+                  inputType="date"
+                  v-model:editingValue="editingValue"
                 />
               </td>
               <td
@@ -68,10 +98,12 @@
 import router from '@/router';
 import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
-import { formatDateForList } from '@/helpers/utils';
-import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
+import InlineEditing from '../InlineEditing.vue';
+const editingId = ref<string | null>('');
+const editingField = ref('');
+const editingValue = ref<string | number | Date>('');
 
 interface User {
   firstName: string;
@@ -88,11 +120,41 @@ interface Goal {
 
 const user = ref<User | null>(null);
 let totalAmount = ref(0);
+const isEditing = ref(false);
 
 const goalList = ref<Goal[]>([]);
 
-const editGoal = async (id: string) => {
-  router.push({ name: 'GoalEdit', params: { id: id } });
+const editGoalCell = (
+  value: string | number | Date,
+  field: string,
+  id: string,
+) => {
+  editingField.value = field;
+  if (field === 'date') {
+    editingValue.value = new Date(value).toISOString().split('T')[0];
+  } else {
+    editingValue.value = value.toString();
+  }
+  editingId.value = id;
+  isEditing.value = true;
+};
+
+const handleUpdate = async (id: string) => {
+  try {
+    await api.patch(`/goals/${id}`, {
+      [editingField.value]: editingValue.value,
+    });
+
+    editingId.value = null;
+    await fetchGoalList();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const cancelEdit = () => {
+  editingId.value = null;
+  editingValue.value = '';
 };
 
 const deleteGoal = async (id: string) => {
@@ -112,6 +174,7 @@ const fetchGoalList = async () => {
     if (user.value && user.value.userId) {
       const response = await api.get(`/goals/${user.value.userId}`);
       goalList.value = response.data;
+      totalAmount.value = 0;
       goalList.value.forEach((v) => (totalAmount.value += v.amount));
     }
   } catch (err) {

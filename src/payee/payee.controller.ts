@@ -42,7 +42,6 @@ export class PayeeController {
     @Param('id') id: string,
     @Body() updateData: { field: string; value: string | number | Date },
   ): void {
-    console.log(updateData, updateData.field, updateData.value);
     this.payeeService.updateField(id, updateData);
   }
 

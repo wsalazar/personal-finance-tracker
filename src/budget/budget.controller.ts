@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   UseGuards,
@@ -31,9 +32,17 @@ export class BudgetController {
     return await this.budgetService.fetchIncomeById(id);
   }
 
+  @Patch(':id')
+  editIncomeField(
+    @Param('id') id: string,
+    @Body() updateData: { field: string; value: string | number | Date },
+  ): void {
+    this.budgetService.updateField(id, updateData);
+  }
+
   @Post()
   // @UseGuards(AuthGuard('jwt'))
-  insertBudget(@Body() createBudgetDto: CreateBudgetDto): any {
+  insertBudget(@Body() createBudgetDto: CreateBudgetDto): Promise<Budget> {
     return this.budgetService.create(createBudgetDto);
   }
 

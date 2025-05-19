@@ -42,23 +42,24 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, defineProps, defineEmits } from 'vue';
+import { reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const router = useRouter();
-const props = defineProps({
+interface Props {
   form: {
-    type: Object,
-    required: true,
-  },
-  isDirty: {
-    type: Boolean,
-    required: false,
-  },
-});
+    incomeSource: string;
+    date: string;
+    amount: number;
+  };
+  isDirty?: boolean;
+}
 
+const props = defineProps<Props>();
+
+const emit = defineEmits<{ (e: 'submit', form: Props['form']): void }>();
+
+const router = useRouter();
 const localForm = reactive({ ...props.form });
-const emit = defineEmits(['submit']);
 
 const emitChange = () => {
   emit('submit', localForm);

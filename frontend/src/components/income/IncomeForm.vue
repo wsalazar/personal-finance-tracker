@@ -33,7 +33,7 @@ interface IncomeData {
   amount: number;
   incomeSource: string;
   date: string;
-  userId: number;
+  userId?: number;
 }
 
 const handleIncomeSubmit = (incomeData: IncomeData) => {
@@ -59,7 +59,7 @@ onMounted(async () => {
   }
 });
 
-const fetchIncomeById = async (id: string) => {
+const fetchIncomeById = async (id: string | string[]) => {
   try {
     return await api.get('/income/single-item/' + id);
   } catch (err) {

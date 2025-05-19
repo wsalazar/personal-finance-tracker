@@ -35,66 +35,52 @@
                   )
                 "
               >
-                <template
-                  v-if="
+                <InlineEditing
+                  :data="expense"
+                  editingField="description"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
                     editingId === expense._id && editingField === 'description'
                   "
-                >
-                  <input
-                    v-model="editingValue"
-                    @blur="saveEdit(expense._id)"
-                    @keyup.enter="saveEdit(expense._id)"
-                    @keyup.esc="cancelEdit()"
-                    class="w-full border border-blue-500 rounded pl-28 focus:caret-blue-500 cursor-text"
-                    ref="editInput"
-                    autofocus
-                    type="text"
-                  />
-                </template>
-                <template v-else>
-                  {{ expense.description }}
-                </template>
+                  :editingId="expense._id"
+                  inputType="text"
+                  v-model:editingValue="editingValue"
+                />
               </td>
               <td
                 class="p-0.5 border border-gray-300 w-20"
                 @click="editExpenseCell(expense.amount, 'amount', expense._id)"
               >
-                <template
-                  v-if="editingId == expense._id && editingField == 'amount'"
-                >
-                  <input
-                    v-model="editingValue"
-                    @blur="saveEdit(expense._id)"
-                    @keyup.enter="saveEdit(expense._id)"
-                    @keyup.esc="cancelEdit()"
-                    class="w-full border border-blue-500 rounded pl-28 focus:caret-blue-500 cursor-text"
-                    ref="editInput"
-                    autofocus
-                    type="text"
-                  />
-                </template>
-                <template v-else> ${{ expense.amount }} </template>
+                <InlineEditing
+                  :data="expense"
+                  editingField="amount"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
+                    editingId === expense._id && editingField === 'amount'
+                  "
+                  :editingId="expense._id"
+                  inputType="text"
+                  v-model:editingValue="editingValue"
+                />
               </td>
               <td
                 class="p-0.5 border border-gray-300 w-20"
                 @click="editExpenseCell(expense.date, 'date', expense._id)"
               >
-                <template
-                  v-if="editingId === expense._id && editingField === 'date'"
-                >
-                  <input
-                    class="w-full border border-blue-500 rounded pl-28 focus:caret-blue-500 cursor-text"
-                    @blur="saveEdit(expense._id)"
-                    @keyup.enter="saveEdit(expense._id)"
-                    @keyup="cancelEdit(expense)"
-                    autofocus
-                    v-model="editingValue"
-                    type="date"
-                  />
-                </template>
-                <template v-else>
-                  {{ formatDateForList(expense.date) }}
-                </template>
+                <InlineEditing
+                  :data="expense"
+                  editingField="date"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
+                    editingId === expense._id && editingField === 'date'
+                  "
+                  :editingId="expense._id"
+                  inputType="date"
+                  v-model:editingValue="editingValue"
+                />
               </td>
               <td
                 class="w-20 p-2 font-bold border border-gray-300 cursor-pointer text-rose-600"
@@ -125,6 +111,7 @@ import { onMounted, ref } from 'vue';
 import SidebarMenu from '@/views/SidebarMenu.vue';
 import { formatDateForList } from '@/helpers/utils';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
+import InlineEditing from '../InlineEditing.vue';
 const editingId = ref<string | null>(null);
 const editingValue = ref('');
 const editingField = ref('');
@@ -163,7 +150,7 @@ const editExpenseCell = (
   editingField.value = field;
 };
 
-const saveEdit = async (id: string) => {
+const handleUpdate = async (id: string) => {
   try {
     await api.patch(`/expenses/${id}`, {
       [editingField.value]: editingValue.value,

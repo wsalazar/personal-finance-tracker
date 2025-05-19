@@ -20,30 +20,69 @@
               <th class="w-1/4 p-2 border border-gray-300">Name</th>
               <th class="w-1/4 p-2 border border-gray-300">Amount</th>
               <th class="w-1/4 p-2 border border-gray-300">Date</th>
-              <th class="w-1/4 p-2 border border-gray-300">Edit</th>
               <th class="w-1/4 p-2 border border-gray-300">Delete</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="income in incomeList" :key="income._id">
-              <td class="p-0.5 border border-gray-300 w-20">
-                {{ income.incomeSource }}
-              </td>
-              <td class="p-0.5 border border-gray-300 w-20">
-                ${{ income.amount }}
-              </td>
-              <td class="p-0.5 border border-gray-300 w-20">
-                {{ formatDateForList(income.date) }}
-              </td>
               <td
-                class="flex items-center justify-center p-2 border border-gray-150 w-30"
-                @click="editIncome(income._id)"
+                class="p-0.5 border border-gray-300 w-20"
+                @click="
+                  editIncomeCell(
+                    income.incomeSource,
+                    'incomeSource',
+                    income._id,
+                  )
+                "
               >
-                <PencilSquareIcon
-                  className=" text-gray-500"
-                  style="width: 30px; height: 30px; cursor: pointer"
+                <InlineEditing
+                  :data="income"
+                  editingField="incomeSource"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
+                    editingId === income._id && editingField === 'incomeSource'
+                  "
+                  :editingId="income._id"
+                  inputType="text"
+                  v-model:editingValue="editingValue"
                 />
               </td>
+              <td
+                class="p-0.5 border border-gray-300 w-20"
+                @click="editIncomeCell(income.amount, 'amount', income._id)"
+              >
+                <InlineEditing
+                  :data="income"
+                  editingField="amount"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
+                    editingId === income._id && editingField === 'amount'
+                  "
+                  :editingId="income._id"
+                  inputType="text"
+                  v-model:editingValue="editingValue"
+                />
+              </td>
+              <td
+                class="p-0.5 border border-gray-300 w-20"
+                @click="editIncomeCell(income.date, 'date', income._id)"
+              >
+                <InlineEditing
+                  :data="income"
+                  editingField="date"
+                  @save="handleUpdate"
+                  @cancel="cancelEdit"
+                  :isEditing="
+                    editingId === income._id && editingField === 'date'
+                  "
+                  :editingId="income._id"
+                  inputType="date"
+                  v-model:editingValue="editingValue"
+                />
+              </td>
+
               <td
                 class="w-20 p-2 font-bold border border-gray-300 cursor-pointer text-rose-600"
                 @click="deleteIncome(income._id)"
@@ -70,10 +109,9 @@
 import router from '@/router';
 import { api } from '@/services/api';
 import { onMounted, ref } from 'vue';
-import { PencilSquareIcon } from '@heroicons/vue/16/solid';
 import SidebarMenu from '@/views/SidebarMenu.vue';
-import { formatDateForList } from '@/helpers/utils';
 import ProfileDropdown from '@/views/ProfileDropdown.vue';
+import InlineEditing from '../InlineEditing.vue';
 
 interface Income {
   _id: string;
@@ -90,9 +128,42 @@ interface User {
 const incomeList = ref<Income[]>([]);
 const totalAmount = ref(0);
 const user = ref<User | null>(null);
+const editingField = ref('');
+const editingValue = ref<string | number | Date>('');
+const editingId = ref<string | null>('');
+const isEditing = ref(false);
 
-const editIncome = async (id: string) => {
-  router.push({ name: 'IncomeEdit', params: { id: id } });
+const handleUpdate = async (id: string) => {
+  try {
+    await api.patch(`/income/${id}`, {
+      [editingField.value]: editingValue.value,
+    });
+    editingId.value = null;
+    await fetchIncomeList();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const cancelEdit = () => {
+  editingId.value = null;
+  editingValue.value = '';
+};
+
+const editIncomeCell = (
+  value: string | number | Date,
+  field: string,
+  id: string,
+) => {
+  editingField.value = field;
+  if (field === 'date') {
+    const date = new Date(value);
+    editingValue.value = date.toISOString().split('T')[0];
+  } else {
+    editingValue.value = value.toString();
+  }
+  editingId.value = id;
+  isEditing.value = true;
 };
 
 const deleteIncome = async (id: string) => {

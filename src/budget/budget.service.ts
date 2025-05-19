@@ -21,6 +21,18 @@ export class BudgetService {
     return createdBudget.save();
   }
 
+  updateField(
+    id: string,
+    updateData: { field: string; value: string | number | Date },
+  ): void {
+    const update = { $set: updateData };
+    this.budgetModel
+      .findByIdAndUpdate({ _id: Object(id) }, update, {
+        new: true,
+      })
+      .exec();
+  }
+
   async edit(
     id: string,
     editBudgetDto: Partial<CreateBudgetDto>,

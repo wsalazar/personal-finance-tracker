@@ -22,6 +22,16 @@ export class GoalService {
     return createdBudget.save();
   }
 
+  updateField(
+    id: string,
+    updateData: { field: string; value: string | number | Date },
+  ): void {
+    const update = { $set: updateData };
+    this.goalModel
+      .findByIdAndUpdate({ _id: Object(id) }, update, { new: true })
+      .exec();
+  }
+
   async edit(
     id: string,
     goaltDto: Partial<CreateGoalDto>,

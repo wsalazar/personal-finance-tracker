@@ -11,11 +11,7 @@
     />
   </template>
   <template v-else>
-    {{
-      localValue.editingField === 'date'
-        ? formatDateForList(localValue?.data[localValue.editingField])
-        : localValue?.data[localValue.editingField]
-    }}
+    {{ local }}
   </template>
 </template>
 
@@ -66,4 +62,35 @@ const handleInput = (e: Event) => {
   emit('update:editingValue', target.value);
 };
 const localValue = ref(props);
+const local = ref<string | number | Date>('');
+
+type fieldType = 'date' | 'amount' | string;
+
+const fieldFormatters: Record<
+  fieldType,
+  (value: any) => string | number | Date
+> = {
+  date: (value: Date) => formatDateForList(value),
+  amount: (value: number) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value),
+  default: (value: string) => value,
+};
+
+const formatFieldValue = (
+  fieldType: string,
+  fieldValue: string | number | Date,
+): string | number | Date => {
+  const formatter = fieldFormatters[fieldType] || fieldFormatters.default;
+  return formatter(fieldValue);
+};
+
+local.value = formatFieldValue(
+  localValue.value.editingField,
+  localValue.value?.data[localValue.value.editingField],
+);
 </script>

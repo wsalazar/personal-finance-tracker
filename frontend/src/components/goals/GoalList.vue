@@ -83,7 +83,7 @@
           <tfoot>
             <tr>
               <td>Total</td>
-              <td>${{ totalAmount }}</td>
+              <td>{{ formattedTotalAmount }}</td>
               <td></td>
               <td></td>
             </tr>
@@ -120,6 +120,7 @@ interface Goal {
 
 const user = ref<User | null>(null);
 let totalAmount = ref(0);
+const formattedTotalAmount = ref('');
 const isEditing = ref(false);
 
 const goalList = ref<Goal[]>([]);
@@ -176,6 +177,12 @@ const fetchGoalList = async () => {
       goalList.value = response.data;
       totalAmount.value = 0;
       goalList.value.forEach((v) => (totalAmount.value += v.amount));
+      formattedTotalAmount.value = new Intl.NumberFormat('en-US', {
+        currency: 'USD',
+        style: 'currency',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(totalAmount.value);
     }
   } catch (err) {
     console.error('Error fetching data');

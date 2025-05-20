@@ -4,12 +4,22 @@
       Personal Finance Tracker
     </h1>
     <ul>
-      <li><router-link to="/income">Income</router-link></li>
       <li>
-        <router-link to="/expenses">Expenses</router-link>
+        <router-link to="/income" class="nav-link" active-class="active"
+          >Income</router-link
+        >
       </li>
       <li>
-        <router-link to="/goals" :class="{ disabled: isGoalsDisabled }"
+        <router-link to="/expenses" class="nav-link" active-class="active"
+          >Expenses</router-link
+        >
+      </li>
+      <li>
+        <router-link
+          to="/goals"
+          :class="{ disabled: isGoalsDisabled }"
+          active-class="active"
+          class="nav-link"
           >Goals</router-link
         >
       </li>
@@ -27,7 +37,6 @@ const isGoalsDisabled = ref(true);
 
 const dashboard = () => {
   router.push('/');
-  // router.push({ name: 'DashboardPage' });
 };
 
 const shouldGoalsBeEnabled = async () => {
@@ -85,5 +94,20 @@ shouldGoalsBeEnabled();
   pointer-events: none;
   color: #ccc;
   text-decoration: none;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  padding: 0.5rem;
+  display: block;
+  border-radius: 4px;
+}
+.nav-link:hover {
+  color: teal;
+}
+.active {
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+  color: teal;
 }
 </style>

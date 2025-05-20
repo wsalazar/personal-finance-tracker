@@ -93,7 +93,7 @@
           <tfoot>
             <tr>
               <td>Total</td>
-              <td>${{ totalAmount }}</td>
+              <td>{{ formattedTotalAmount }}</td>
               <td></td>
               <td></td>
             </tr>
@@ -131,7 +131,7 @@ interface User {
 const expenseList = ref<Expense[]>([]);
 const user = ref<User | null>(null);
 let totalAmount = ref(0);
-
+const formattedTotalAmount = ref('');
 const editExpenseCell = (
   fieldValue: string | number | Date,
   field: string,
@@ -188,6 +188,12 @@ const fetchExpenseList = async () => {
       expenseList.value = response.data;
       totalAmount.value = 0;
       expenseList.value.forEach((v) => (totalAmount.value += v.amount));
+      formattedTotalAmount.value = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(totalAmount.value);
     } else {
       console.error('User ID is not available');
     }

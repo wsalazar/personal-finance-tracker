@@ -94,7 +94,7 @@
           <tfoot>
             <tr>
               <td>Total</td>
-              <td>${{ totalAmount }}</td>
+              <td>{{ formattedTotalAmount }}</td>
               <td></td>
               <td></td>
             </tr>
@@ -127,6 +127,7 @@ interface User {
 
 const incomeList = ref<Income[]>([]);
 const totalAmount = ref(0);
+const formattedTotalAmount = ref('');
 const user = ref<User | null>(null);
 const editingField = ref('');
 const editingValue = ref<string | number | Date>('');
@@ -181,6 +182,12 @@ const fetchIncomeList = async () => {
       const response = await api.get(`/income/user/${user.value.userId}`);
       incomeList.value = response.data;
       incomeList.value.forEach((v) => (totalAmount.value += v.amount));
+      formattedTotalAmount.value = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(totalAmount.value);
     }
   } catch (err) {
     console.error('Error fetching data');

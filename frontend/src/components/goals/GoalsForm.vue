@@ -69,7 +69,7 @@ const handleSubmit = async () => {
     form.date = new Date().toISOString().split('T')[0];
     router.push({ name: 'GoalList' });
   } catch (error) {
-    console.error('Failed to add goal:', error);
+    // console.error('Failed to add goal:', error);
   }
 };
 </script>

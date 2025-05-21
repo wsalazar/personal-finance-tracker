@@ -149,7 +149,7 @@ const handleUpdate = async (id: string) => {
     editingId.value = null;
     await fetchGoalList();
   } catch (err) {
-    console.error(err);
+    // console.error(err);
   }
 };
 
@@ -166,7 +166,7 @@ const deleteGoal = async (id: string) => {
     /**
      * todo Add toaster instead of having a console log
      */
-    console.error(err);
+    // console.error(err);
   }
 };
 
@@ -185,7 +185,7 @@ const fetchGoalList = async () => {
       }).format(totalAmount.value);
     }
   } catch (err) {
-    console.error('Error fetching data');
+    // console.error('Error fetching data');
   }
 };
 onMounted(() => {

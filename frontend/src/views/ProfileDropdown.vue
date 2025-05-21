@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, reactive } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const isOpen = ref(false);
@@ -20,12 +20,18 @@ const router = useRouter();
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
-const props = defineProps({
-  user: {
-    type: Object,
-    required: true,
-  },
-});
+
+const props = defineProps<{
+  user: User;
+}>();
+
+interface User {
+  firstName: string;
+  lastName: string;
+  userId: string;
+}
+
+const user = ref<User>(props.user);
 
 const goToProfile = () => {
   /**

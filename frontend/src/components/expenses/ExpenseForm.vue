@@ -71,7 +71,7 @@ const handleSubmit = async () => {
     form.date = new Date().toISOString().split('T')[0];
     router.push({ name: 'ExpenseList' });
   } catch (error) {
-    console.error('Failed to add expense:', error);
+    // console.error('Failed to add expense:', error);
   }
 };
 </script>

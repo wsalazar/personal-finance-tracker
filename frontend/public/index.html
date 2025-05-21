@@ -2,17 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Your App Title</title>
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <title><%=htmlWebpackPlugin.options.title %></title>
     <!-- <link rel="stylesheet" href="css/app.3b7d70e1.css" /> -->
   </head>
   <body>
     <!-- <base href="/" /> -->
-    <!-- <noscript>
-      We're sorry but Your App doesn't work properly without JavaScript enabled.
-      Please enable it to continue.
-    </noscript> -->
-    <div id="app"></div>
+    <noscript>
+      <strong
+        >We're sorry but <%=htmlWebpackPlugin.options.title%> doesn't work
+        properly without JavaScript enabled. Please enable it to
+        continue.</strong
+      >
+    </noscript>
+    <div id="app"><!--vue-ssr-outlet--></div>
     <!-- <script src="js/app.c16a45f2.js"></script> -->
     <!-- <script src="js/chunk-vendors.56b6dafb.js"></script> -->
   </body>

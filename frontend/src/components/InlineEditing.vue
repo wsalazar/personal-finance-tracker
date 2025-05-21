@@ -47,7 +47,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: 'save', data: any): void;
+  (e: 'save', data: string): void;
   (e: 'cancel'): void;
   (e: 'update:editingValue', value: string | number | Date): void;
 }>();
@@ -64,13 +64,11 @@ const handleInput = (e: Event) => {
 const localValue = ref(props);
 const local = ref<string | number | Date>('');
 
-type fieldType = 'date' | 'amount' | string;
+type FieldType = 'date' | 'amount' | string;
+type FieldValue = string | number | Date;
 
-const fieldFormatters: Record<
-  fieldType,
-  (value: any) => string | number | Date
-> = {
-  date: (value: Date) => formatDateForList(value),
+const formatters = {
+  date: (value: Date) => new Date(value).toISOString().split('T')[0],
   amount: (value: number) =>
     new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -82,11 +80,18 @@ const fieldFormatters: Record<
 };
 
 const formatFieldValue = (
-  fieldType: string,
-  fieldValue: string | number | Date,
-): string | number | Date => {
-  const formatter = fieldFormatters[fieldType] || fieldFormatters.default;
-  return formatter(fieldValue);
+  fieldType: FieldType,
+  fieldValue: FieldValue,
+): string => {
+  // console.log(fieldType, fieldValue instanceof Date);
+  if (fieldType === 'date') {
+    const date = new Date(fieldValue);
+    return formatters.date(date);
+  }
+  if (fieldType === 'amount' && typeof fieldValue === 'number') {
+    return formatters.amount(fieldValue);
+  }
+  return formatters.default(String(fieldValue));
 };
 
 local.value = formatFieldValue(

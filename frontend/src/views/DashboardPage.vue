@@ -46,7 +46,23 @@ import SidebarMenu from './SidebarMenu.vue';
 import ProfileDropdown from './ProfileDropdown.vue';
 
 import { api } from '@/services/api';
-const user = ref<Record<string, any>>({});
+
+interface User {
+  _id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+const user = ref<User>({
+  _id: '',
+  userId: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+});
+
 interface TrackerItem {
   id: string;
   goalName: string;

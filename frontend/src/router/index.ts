@@ -7,7 +7,6 @@ import GoalList from '@/components/goals/GoalList.vue';
 import IncomeForm from '@/components/income/IncomeForm.vue';
 import ExpenseForm from '@/components/expenses/ExpenseForm.vue';
 import GoalsForm from '@/components/goals/GoalsForm.vue';
-import LoginPage from '@/components/auth/LoginPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {

@@ -23,5 +23,14 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/script-setup-uses-vars': 'error',
+    semi: ['error', 'always'],
+    quotes: ['error', 'single', { avoidEscape: true }],
+    'prettier/prettier': [
+      'error',
+      {
+        singleQuote: true,
+        trailingComma: 'all',
+      },
+    ],
   },
 };

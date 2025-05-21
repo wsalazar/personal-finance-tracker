@@ -4,15 +4,23 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "npm run build:client && npm run build:server",
+    "lint": "vue-cli-service lint",
+    "build:client": "vue-cli-service build",
+    "build:server": "cross-env SSR=true vue-cli-service build",
+    "start": "node server.js",
+    "analyze": "vue-cli-service build --report"
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.5",
+    "@vue/server-renderer": "^3.2.13",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "core-js": "^3.8.3",
+    "express": "^4.21.2",
+    "node-ipc": "^10.1.0",
     "postcss": "^8.4.49",
+    "shell-quote": "^1.8.2",
     "tailwindcss": "^3.4.15",
     "vue": "^3.2.13",
     "vue-router": "^4.4.5",
@@ -27,6 +35,7 @@
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -34,6 +43,8 @@
     "prettier": "^2.4.1",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
-    "typescript": "~4.5.5"
+    "typescript": "~4.5.5",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-node-externals": "^3.0.0"
   }
 }

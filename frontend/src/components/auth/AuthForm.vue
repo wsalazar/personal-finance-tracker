@@ -89,7 +89,7 @@ const handleSubmit = async () => {
       throw new Error('Passwords do not match');
     }
     const endpoint = isLogin.value ? '/auth/login' : '/auth/register';
-    const { data } = await api.post(endpoint, {
+    await api.post(endpoint, {
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,

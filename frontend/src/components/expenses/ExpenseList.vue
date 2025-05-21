@@ -158,7 +158,7 @@ const handleUpdate = async (id: string) => {
     editingId.value = null;
     await fetchExpenseList();
   } catch (err) {
-    console.error('Error updating description:', err);
+    // console.error('Error updating description:', err);
   }
 };
 
@@ -178,7 +178,7 @@ const deleteExpense = async (id: string) => {
     /**
      * todo add toaster
      */
-    console.error(err);
+    // console.error(err);
   }
 };
 const fetchExpenseList = async () => {
@@ -195,13 +195,13 @@ const fetchExpenseList = async () => {
         maximumFractionDigits: 2,
       }).format(totalAmount.value);
     } else {
-      console.error('User ID is not available');
+      // console.error('User ID is not available');
     }
   } catch (err) {
     /**
      * todo add toaster
      */
-    console.error('Error fetching data');
+    // console.error('Error fetching data');
   }
 };
 onMounted(() => {

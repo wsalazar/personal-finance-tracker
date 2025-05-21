@@ -16,7 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import { formatDateForList } from '@/helpers/utils';
 import { ref } from 'vue';
 
 const props = defineProps({

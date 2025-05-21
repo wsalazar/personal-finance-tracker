@@ -79,7 +79,9 @@ onMounted(async () => {
       .then((response) => {
         tracker.value = response.data;
       })
-      .catch((error) => console.log(error));
+      .catch(() => {
+        // put notification here
+      });
   }
 });
 </script>

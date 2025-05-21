@@ -142,7 +142,7 @@ const handleUpdate = async (id: string) => {
     editingId.value = null;
     await fetchIncomeList();
   } catch (err) {
-    console.error(err);
+    // put notification here
   }
 };
 
@@ -172,7 +172,7 @@ const deleteIncome = async (id: string) => {
     await api.delete('/income/' + id);
     fetchIncomeList();
   } catch (err) {
-    console.error(err);
+    // put notification here
   }
 };
 
@@ -190,7 +190,7 @@ const fetchIncomeList = async () => {
       }).format(totalAmount.value);
     }
   } catch (err) {
-    console.error('Error fetching data');
+    // put notification here
   }
 };
 onMounted(() => {

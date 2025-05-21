@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import AuthPage from '../views/AuthPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
-import IncomeList from '@/components/income/IncomeList.vue';
+import IncomeList from '../components/income/IncomeList.vue';
 import ExpenseList from '@/components/expenses/ExpenseList.vue';
 import GoalList from '@/components/goals/GoalList.vue';
-import IncomeForm from '@/components/income/IncomeForm.vue';
+import IncomeForm from '../components/income/IncomeForm.vue';
 import ExpenseForm from '@/components/expenses/ExpenseForm.vue';
 import GoalsForm from '@/components/goals/GoalsForm.vue';
 

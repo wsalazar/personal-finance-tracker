@@ -46,7 +46,7 @@ const shouldGoalsBeEnabled = async () => {
     const result = await api.get(`goals/verification/${loggedInUser.userId}`);
     isGoalsDisabled.value = !result.data;
   } catch (err) {
-    console.log(err);
+    // put notification here
   }
 };
 
